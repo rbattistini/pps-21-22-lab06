@@ -26,9 +26,9 @@ object FunctionsImpl extends Functions:
 
   override def combine[A](a: Iterable[A])(using c: Combiner[A]): A = a.fold(c.unit)(c.combine)
 
-  def sumC(a: List[Double]): Double = combine(a)
-  def concatC(a: Seq[String]): String = combine(a)
-  def maxC(a: List[Int]): Int = combine(a)
+  override def sumC(a: List[Double]): Double = combine(a)
+  override def concatC(a: Seq[String]): String = combine(a)
+  override def maxC(a: List[Int]): Int = combine(a)
 
 /**
  * 2) To apply DRY principle at the best,
@@ -47,12 +47,12 @@ trait Combiner[A]:
   def combine(a: A, b: A): A
 
 object CombinerImpl:
-  given sumC: Combiner[Double] with
+  given Combiner[Double] with
     override def unit = 0
     override def combine(a: Double, b: Double): Double = a + b
-  given concatC: Combiner[String] with
+  given Combiner[String] with
     override def unit = ""
     override def combine(a: String, b: String): String = a + b
-  given maxC: Combiner[Int] with
+  given Combiner[Int] with
     override def unit: Int = Int.MinValue
     override def combine(a: Int, b: Int): Int = if a > b then a else b
